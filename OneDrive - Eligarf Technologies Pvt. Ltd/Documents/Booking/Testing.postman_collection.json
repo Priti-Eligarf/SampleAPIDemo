@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "cd1cf14a-adf9-4946-8639-8ca4740ef24a",
+		"name": "Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32831424"
+	},
+	"item": [
+		{
+			"name": "Positive",
+			"item": [
+				{
+					"name": "GetbookingID's",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/booking",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBookings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present and is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\",\"application/json; charset=utf-8\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has bookingid property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('bookingid');\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"B_id\",jsonData.bookingid)\r",
+									" pm.test(\"bookingid is stored in environment variable\", function () {\r",
+									"    pm.expect(pm.environment.get(\"B_id\")).to.eql(pm.response.json().bookingid);\r",
+									" });\r",
+									"\r",
+									"var fname = pm.variables.get(\"fname\");\r",
+									"var lname = pm.variables.get(\"lname\");\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Vaerify the  test first name\", function () {\r",
+									"        pm.expect(jsonData.booking.firstname).to.eql(fname);\r",
+									"});\r",
+									"pm.test(\"Vaerify the  test first name\", function () {\r",
+									"        pm.expect(jsonData.booking.lastname).to.eql(lname);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"{{fname}}\",\r\n    \"lastname\": \"{{lname}}\",\r\n    \"totalprice\": 889,\r\n    \"depositpaid\": true,\r\n    \"bookingdates\": {\r\n        \"checkin\": \"2023-02-01\",\r\n        \"checkout\": \"2024-02-01\"\r\n  },\r\n    \"additionalneeds\": \"Extra pillows please\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/booking",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking"
+							]
+						},
+						"description": "### Create a New Booking\n\nThis endpoint allows you to create a new booking.\n\n**Request Body**\n\n- `firstname` (string, required): The first name of the guest.\n- `lastname` (string, required): The last name of the guest.\n- `totalprice` (number, required): The total price of the booking.\n- `depositpaid` (boolean, required): Indicates if the deposit is paid or not.\n- `bookingdates` (object, required): The check-in and check-out dates for the booking.\n    - `checkin` (string, required): The check-in date.\n    - `checkout` (string, required): The check-out date.\n- `additionalneeds` (string, optional): Any additional needs or requests for the booking.\n    \n\n**Response**\n\n- Status: 200 OK\n- Content-Type: application/json\n- `bookingid` (number): The ID of the newly created booking.\n- `booking` (object): The details of the newly created booking, including the guest's information, total price, deposit status, booking dates, and additional needs."
+					},
+					"response": []
+				},
+				{
+					"name": "Getbookingdetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer  087751474c4338d",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/booking/{{B_id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking",
+								"{{B_id}}"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "lastname",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "checkin",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "checkout",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"token_id\", jsonData.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"admin\",\r\n    \"password\" : \"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/auth",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBookings",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{token_id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"Shantanu\",\r\n    \"lastname\" : \"Lale\",\r\n    \"totalprice\" : 555,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/booking/{{B_id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking",
+								"{{B_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Bookings by Patch method",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{token_id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"Sharvil Shantanu\",\r\n    \"lastname\" : \"Laley\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/booking/{{B_id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking",
+								"{{B_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "token={{token_id}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BaseURL}}/booking/{{B_id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking",
+								"{{B_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "curl command Import",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/2566",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"2566"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative",
+			"item": [
+				{
+					"name": "Getbookingdetails invalid data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify the invalid data Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/booking/1147",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"booking",
+								"1147"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBookings pass invalid details",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Snehal\",\r\n    \"lastname\": \" Khot\",\r\n    \"totalprice\": 111,\r\n    \"depositpaid\": true,\r\n    \"bookingdates\": {\r\n        \"checkin\": \"2023-02-01\",\r\n        \"checkout\": \"2024-02-01\"\r\n  },\r\n    \"additionalneeds\": \"Extra pillows please\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
